@@ -53,7 +53,7 @@ class LifePanel(object):
         gen = self.game.next_gen(self.seed)
 
         while True:
-            time.sleep(0.5)
+            time.sleep(0.2)
             self.draw_generation(gen)
             gen = self.game.next_gen(gen) 
 
