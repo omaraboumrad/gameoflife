@@ -1,6 +1,4 @@
 import numpy
-import curses
-import time
 
 class Life(object):
     def next_gen(self, array):
@@ -39,37 +37,5 @@ class Life(object):
 
         return 0
 
-class LifePanel(object):
-    def __init__(self, seed):
-        self.seed = seed
-        self.game = Life()
-        self.screen = curses.initscr()
-
-    def main(self):
-        self.screen.clear()
-        
-        self.draw_generation(self.seed)
-
-        gen = self.game.next_gen(self.seed)
-
-        while True:
-            time.sleep(0.2)
-            self.draw_generation(gen)
-            gen = self.game.next_gen(gen) 
-
-
-        self.screen.refresh()
-        self.screen.getch()
-        curses.endwin()
-
-    def draw_generation(self, data):
-        self.screen.clear()
-        for j, row in enumerate(data):
-            for i, col in enumerate(row):
-                if col:
-                    self.screen.addstr(j,i,'O')
-                else:
-                    self.screen.addstr(j,i,' ')
-        self.screen.refresh()
 
           
