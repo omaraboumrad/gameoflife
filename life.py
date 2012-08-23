@@ -67,7 +67,7 @@ class LifePanel(object):
         for j, row in enumerate(data):
             for i, col in enumerate(row):
                 if col:
-                    self.screen.addstr(j,i,'#')
+                    self.screen.addstr(j,i,'O')
                 else:
                     self.screen.addstr(j,i,' ')
         self.screen.refresh()
