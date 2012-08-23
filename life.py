@@ -1,4 +1,6 @@
 import numpy
+import curses
+import time
 
 class Life(object):
     def next_gen(self, array):
@@ -11,8 +13,8 @@ class Life(object):
             for i,column in enumerate(row):
                 successor = self.get_successor(array[j:j+3,i:i+3])
                 new_gen_row.append(successor)
-            new_gen.append(new_gen_row)
-        return new_gen
+            new_gen.append([0] + new_gen_row + [0])
+        return [[0]*len(array[0])] + new_gen + [[0]*len(array[0])]
 
     def get_successor(self, m):
         """ Retrieves the successor of m[1,1] """
@@ -37,3 +39,37 @@ class Life(object):
 
         return 0
 
+class LifePanel(object):
+    def __init__(self, seed):
+        self.seed = seed
+        self.game = Life()
+        self.screen = curses.initscr()
+
+    def main(self):
+        self.screen.clear()
+        
+        self.draw_generation(self.seed)
+
+        gen = self.game.next_gen(self.seed)
+
+        while True:
+            time.sleep(0.5)
+            self.draw_generation(gen)
+            gen = self.game.next_gen(gen) 
+
+
+        self.screen.refresh()
+        self.screen.getch()
+        curses.endwin()
+
+    def draw_generation(self, data):
+        self.screen.clear()
+        for j, row in enumerate(data):
+            for i, col in enumerate(row):
+                if col:
+                    self.screen.addstr(j,i,'#')
+                else:
+                    self.screen.addstr(j,i,' ')
+        self.screen.refresh()
+
+          
