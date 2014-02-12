@@ -1,41 +1,25 @@
-import numpy
-
 class Life(object):
     def next_gen(self, array):
-        """ Iterates over cells, gets successor, populates new generation """
-        array = numpy.array(array)
         new_gen = []
-        hack_array = array[1:-1,1:-1] # temp hack until edges are solved
-        for j,row in enumerate(hack_array):
+        for j,row in enumerate(array):
             new_gen_row = []
             for i,column in enumerate(row):
-                successor = self.get_successor(array[j:j+3,i:i+3])
+                successor = self.get_successor(array, j, i, len(array), len(row))
                 new_gen_row.append(successor)
-            new_gen.append([0] + new_gen_row + [0])
-        return [[0]*len(array[0])] + new_gen + [[0]*len(array[0])]
+            new_gen.append(new_gen_row)
+        return new_gen
 
-    def get_successor(self, m):
-        """ Retrieves the successor of m[1,1] """
-        is_alive = m[1,1]
-        living_cells = m.sum()-is_alive
+    def get_successor(self, array, j, i, h, w):
+        alive = array[j][i]
+        lmi = lambda x: 0 if x < 0 else x
+        lma = lambda x, m: m-1 if x == m else x
+        living_cells = sum((
+            sum(array[lmi(j-1)   ][lmi(i-1):lma(i+2, w)]),
+            sum(array[j          ][lmi(i-1):lma(i+2, w)]),
+            sum(array[lma(j+1, h)][lmi(i-1):lma(i+2, w)]))) - alive
 
-        # Any dead cell with exactly three live neighbours becomes a live cell.
-        if not is_alive and living_cells == 3:
-            return 1
-        
-        # Any live cell with fewer than two live neighbours dies.
-        if is_alive and living_cells < 2:
-            return 0
-
-        # Any live cell with two or three live neighbors, lives on.
-        if is_alive and living_cells in (2,3):
-            return 1
-
-        # Any live cell with more than three live neighbours, dies.
-        if is_alive and living_cells > 3:
-            return 0
-
-        return 0
+        return 1 if (alive and living_cells in (2,3)) or \
+                    (not alive and living_cells == 3) else 0
 
 
           
